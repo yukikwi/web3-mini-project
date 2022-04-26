@@ -22,23 +22,4 @@ contract Adoption {
     function getAdopters() public view returns (address[16] memory) {
         return adopters;
     }
-
-    // Retrieving the pets with specific adopter
-    function getPets() public view returns (uint[] memory) {
-        // cast petList to store list of pet that owner by msg.sender (max length = 16)
-        uint[] memory petList = new uint[](16);
-        // cast index of petList "j"
-        uint j = 0;
-
-        // Loop check adopters state to get list of pets that msg.sender adopted
-        for(uint i = 0; i < 16; i++){
-            if(adopters[i] == msg.sender){
-                petList[j] = i;
-                j++;
-            }
-        }
-
-        // return petList
-        return (petList);
-    }
 }
