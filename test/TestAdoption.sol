@@ -35,12 +35,4 @@ contract TestAdoption {
 
         Assert.equal(adopters[expectedPetId], expectedAdopter, "Owner of the expected pet should be this contract");
     }
-
-    // Testing retrieval petList
-    function testGetPets() public {
-        // adopt a pet is already execute in testUserCanAdoptPet() so we can getPets without execute it again
-        uint[] memory petList = adoption.getPets();
-
-        Assert.equal(petList[0], expectedPetId, "getPets not return list contains expectedPetId");
-    }
 }
