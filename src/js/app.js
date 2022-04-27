@@ -66,6 +66,8 @@ App = {
 
   bindEvents: function() {
     $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '#random_pet_btn', App.handleRandomAdopt);
+    
   },
 
   markAdopted: function() {
@@ -106,6 +108,42 @@ App = {
         // Execute adopt as a transaction by sending account
         return adoptionInstance.adopt(petId, {from: account});
       }).then(function(result) {
+        return App.markAdopted();
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
+  },
+
+  handleRandomAdopt: function(event) {
+    event.preventDefault();
+
+    var petId = parseInt($(event.target).data('id'));
+
+    var adoptionInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+      App.contracts.Adoption.deployed().then(function(instance) {
+        adoptionInstance = instance;
+
+        // Execute adopt as a transaction by sending account
+        return adoptionInstance.randomPet.sendTransaction(Math.floor(Math.random() * 100), {from: account});
+      }).then(function(result) {
+        console.log(result)
+
+        const contract = new web3.eth.contract(adoptionInstance.abi, adoptionInstance.address)
+
+        //Now get evens depending on what you need
+        contract.getPastEvents("allEvents", {fromBlock: 0, toBlock: "latest"})
+        .then(console.log)  
+
+        $('#random_modal').modal('show')
         return App.markAdopted();
       }).catch(function(err) {
         console.log(err.message);

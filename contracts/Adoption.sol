@@ -1,9 +1,15 @@
 // required solidity version 0.5.0 or newer
-pragma solidity ^0.5.0;
+pragma solidity >=0.8.13;
 
 contract Adoption {
     // create address type variable name adopters
     address[16] public adopters;
+
+    // event
+    event event_randomPet(
+        address from,
+        uint _petId
+    );
 
     // Adopting a pet
     function adopt(uint petId) public returns (uint) {
@@ -21,5 +27,29 @@ contract Adoption {
     // memory gives the data location for the variable
     function getAdopters() public view returns (address[16] memory) {
         return adopters;
+    }
+
+    // random unadopt pet
+    function randomPet(uint nounce) public {
+        uint randomPetIndex = random(16, nounce);
+        uint oldnounce = nounce;
+        // re-random if pet already adopted
+        while(adopters[randomPetIndex] != address(0) && oldnounce + 16 != nounce){
+            nounce = nounce + 1;
+            randomPetIndex = random(16, nounce); 
+        }
+
+        if(oldnounce + 16 != nounce){
+            adopt(randomPetIndex);
+            emit event_randomPet(msg.sender, randomPetIndex);
+        }
+        else{
+            emit event_randomPet(msg.sender, 17);
+        }
+    }
+
+    // util: random
+    function random(uint max, uint nounce) private view returns(uint){
+        return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nounce))) % max;
     }
 }
