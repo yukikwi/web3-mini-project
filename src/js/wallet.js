@@ -9,15 +9,27 @@ App = {
       var petsRow = $('#petsRow');
       var petTemplate = $('#petTemplate');
 
-      for (i = 0; i < data.length; i ++) {
-        if(App.walletPet.includes(i)){
-          petTemplate.find('.panel-title').text(data[i].name);
-          petTemplate.find('img').attr('src', data[i].picture);
-          petTemplate.find('.pet-breed').text(data[i].breed);
-          petTemplate.find('.pet-age').text(data[i].age);
-          petTemplate.find('.pet-location').text(data[i].location);
+      if(App.walletPet.length == 0){
+        // this wallet not adopted any pet
+        document.getElementById("empty_title").innerText = "You are not adopted any pets."
+        document.getElementById("empty_title").style.display = "block"
+        
+      }
+      else{
 
-          petsRow.append(petTemplate.html());
+        // hide wallet not adopted any pet
+        document.getElementById("empty_title").style.display = "none"
+
+        for (i = 0; i < data.length; i ++) {
+          if(App.walletPet.includes(i)){
+            petTemplate.find('.panel-title').text(data[i].name);
+            petTemplate.find('img').attr('src', data[i].picture);
+            petTemplate.find('.pet-breed').text(data[i].breed);
+            petTemplate.find('.pet-age').text(data[i].age);
+            petTemplate.find('.pet-location').text(data[i].location);
+
+            petsRow.append(petTemplate.html());
+          }
         }
       }
     });
