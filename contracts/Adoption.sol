@@ -8,7 +8,7 @@ contract Adoption {
     address public owner;
     
     // event
-    event event_randomPet(
+    event RandomPet(
         address from,
         uint _petId
     );
@@ -62,10 +62,10 @@ contract Adoption {
 
         if(oldnounce + 16 != nounce){
             adopt(randomPetIndex);
-            emit event_randomPet(msg.sender, randomPetIndex);
+            emit RandomPet(msg.sender, randomPetIndex);
         }
         else{
-            emit event_randomPet(msg.sender, 17);
+            emit RandomPet(msg.sender, 17);
         }
     }
 
