@@ -1,12 +1,15 @@
 App = {
   web3Provider: null,
   contracts: {},
+  petList: [],
 
   init: async function() {
     // Load pets.
     $.getJSON('../pets.json', function(data) {
       var petsRow = $('#petsRow');
       var petTemplate = $('#petTemplate');
+
+      App.petList = data;
 
       for (i = 0; i < data.length; i ++) {
         petTemplate.find('.panel-title').text(data[i].name);
@@ -135,14 +138,27 @@ App = {
         // Execute adopt as a transaction by sending account
         return adoptionInstance.randomPet.sendTransaction(Math.floor(Math.random() * 100), {from: account});
       }).then(function(result) {
-        console.log(result)
-
-        const contract = new web3.eth.contract(adoptionInstance.abi, adoptionInstance.address)
-
-        //Now get evens depending on what you need
-        contract.getPastEvents("allEvents", {fromBlock: 0, toBlock: "latest"})
-        .then(console.log)  
-
+        // pet detail
+        var randomPetData = App.petList[result.logs[0].args[1].words[0]]
+        console.log(randomPetData)
+        $("#random_result_body").html(` \
+        <div id="petTemplate"> \
+          <div> \
+            <div class="panel panel-default panel-pet"> \
+              <div class="panel-heading"> \
+                <h3 class="panel-title">${randomPetData.name}</h3> \
+              </div> \
+              <div class="panel-body"> \
+                <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="${randomPetData.picture}" data-holder-rendered="true"> \
+                <br/><br/> \
+                <strong>Breed</strong>: <span class="pet-breed">${randomPetData.breed}</span><br/> \
+                <strong>Age</strong>: <span class="pet-age">${randomPetData.age}</span><br/> \
+                <strong>Location</strong>: <span class="pet-location">${randomPetData.location}</span><br/><br/> \
+              </div> \
+            </div> \
+          </div> \
+        </div> \
+        `)
         $('#random_modal').modal('show')
         return App.markAdopted();
       }).catch(function(err) {
