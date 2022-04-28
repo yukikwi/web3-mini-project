@@ -24,6 +24,8 @@ App = {
         petsRow.append(petTemplate.html());
       }
     });
+    
+    
 
     return await App.initWeb3();
   },
@@ -71,6 +73,7 @@ App = {
   },
 
   initBalance: function(){
+    
     web3.eth.getAccounts(async function(error, accounts) {
       if (error) {
         console.log(error);
@@ -78,8 +81,12 @@ App = {
 
       var account = accounts[0];
       var balance = await web3.eth.getBalance(account); //Will give value in.
-      console.log(balance)
-      console.log(web3.utils.fromWei(balance, 'ether'))
+      App.walletBalance = balance;
+      var total_balance = $('#total_balance');
+      console.log(App.walletBalance);
+      total_balance.text(web3.utils.fromWei(balance, 'ether')+" ETH");
+      // console.log(balance)
+      // console.log(web3.utils.fromWei(balance, 'ether'))
     })
   },
 
