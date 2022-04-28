@@ -159,7 +159,7 @@ App = {
         adoptionInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return adoptionInstance.randomPet.sendTransaction(Math.floor(Math.random() * 100), {from: account});
+        return adoptionInstance.randomPet(Math.floor(Math.random() * 100), {from: account});
       }).then(function(result) {
         // pet detail
         var randomPetData = App.petList[result.logs[0].args[1].words[0]]
