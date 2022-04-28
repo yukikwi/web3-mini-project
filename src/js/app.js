@@ -71,20 +71,15 @@ App = {
   },
 
   initBalance: function(){
-    var adoptionInstance;
+    web3.eth.getAccounts(async function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
 
-    App.contracts.Adoption.deployed().then(function(instance) {
-      adoptionInstance = instance;
-
-      web3.eth.getAccounts(async function(error, accounts) {
-        if (error) {
-          console.log(error);
-        }
-        var account = accounts[0];
-
-        // console.log(web3.fromWei(await adoptionInstance.getBalance.call(), "ether" ) );
-        console.log((new BigNumber(await adoptionInstance.getBalance({from:account}))).toString());
-      })
+      var account = accounts[0];
+      var balance = await web3.eth.getBalance(account); //Will give value in.
+      console.log(balance)
+      console.log(web3.utils.fromWei(balance, 'ether'))
     })
   },
 

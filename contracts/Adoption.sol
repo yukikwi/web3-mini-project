@@ -28,8 +28,8 @@ contract Adoption {
 	// Function to return
 	// current balance of owner
 	function getBalance(
-	) public view returns(uint256){
-		return uint256(owner.balance);
+	) public view returns(uint){
+		return address(this).balance;
 	} 
 
     // Adopting a pet
