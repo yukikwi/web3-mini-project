@@ -5,11 +5,32 @@ contract Adoption {
     // create address type variable name adopters
     address[16] public adopters;
 
+    address public owner;
+    
     // event
     event event_randomPet(
         address from,
         uint _petId
     );
+
+    // Defining a constructor
+	constructor() public{
+		owner=msg.sender;
+	}
+
+	// Function to get
+	// address of owner
+	function getOwner(
+	) public view returns (address) {	
+		return owner;
+	}
+
+	// Function to return
+	// current balance of owner
+	function getBalance(
+	) public view returns(uint256){
+		return owner.balance;
+	}
 
     // Adopting a pet
     function adopt(uint petId) public returns (uint) {
@@ -52,4 +73,5 @@ contract Adoption {
     function random(uint max, uint nounce) private view returns(uint){
         return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nounce))) % max;
     }
+
 }

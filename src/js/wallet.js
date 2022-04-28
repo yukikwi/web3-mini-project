@@ -91,7 +91,7 @@ App = {
         return adoptionInstance.getAdopters.call();
       }).then(function(adopters) {
         for (i = 0; i < adopters.length; i++) {
-          if (adopters[i] === account) {
+          if (adopters[i] == account) {
             App.walletPet.push(i)
           }
         }

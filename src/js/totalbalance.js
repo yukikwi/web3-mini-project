@@ -1,7 +1,6 @@
 App = {
   web3Provider: null,
   contracts: {},
-  
 
   init: async function() {
     // Load pets.
@@ -20,6 +19,11 @@ App = {
         petsRow.append(petTemplate.html());
       }
     });
+    let contractBalance = await this.auction.getBalance()
+    console.log(contractBalance)
+
+    var total_balance = $('#total_balance')
+    total_balance.text();
 
     return await App.initWeb3();
   },
@@ -59,21 +63,10 @@ App = {
       App.contracts.Adoption.setProvider(App.web3Provider);
     
       // Use our contract to retrieve and mark the adopted pets
-      App.initBalance();
       return App.markAdopted();
     });
 
     return App.bindEvents();
-  },
-
-  initBalance: async function(){
-    var adoptionInstance;
-
-    App.contracts.Adoption.deployed().then(function(instance) {
-      adoptionInstance = instance;
-
-      await adoptionInstance.getAdopters.call();
-    })
   },
 
   bindEvents: function() {
@@ -119,6 +112,32 @@ App = {
 
         // Execute adopt as a transaction by sending account
         return adoptionInstance.adopt(petId, {from: account});
+      }).then(function(result) {
+        return App.markAdopted();
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
+  },
+
+  handleBalance: function() {
+
+    var adoptionInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+
+      App.contracts.Adoption.deployed().then(function(instance) {
+        adoptionInstance = instance;
+
+        // Execute adopt as a transaction by sending account
+        
+        return adoptionInstance.getBalance({from: account});
       }).then(function(result) {
         return App.markAdopted();
       }).catch(function(err) {
