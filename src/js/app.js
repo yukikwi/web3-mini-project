@@ -134,6 +134,7 @@ App = {
         // Execute adopt as a transaction by sending account
         return adoptionInstance.adopt(petId, {from: account});
       }).then(function(result) {
+        App.initBalance();
         return App.markAdopted();
       }).catch(function(err) {
         console.log(err.message);
@@ -164,6 +165,7 @@ App = {
         // pet detail
         var randomPetData = App.petList[result.logs[0].args[1].words[0]]
         console.log(randomPetData)
+        App.initBalance();
         $("#random_result_body").html(` \
         <div id="petTemplate"> \
           <div> \
