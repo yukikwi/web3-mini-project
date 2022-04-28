@@ -2,6 +2,8 @@ App = {
   web3Provider: null,
   contracts: {},
   petList: [],
+  walletBalance: 0,
+
 
   init: async function() {
     // Load pets.
@@ -68,13 +70,21 @@ App = {
     return App.bindEvents();
   },
 
-  initBalance: async function(){
+  initBalance: function(){
     var adoptionInstance;
 
     App.contracts.Adoption.deployed().then(function(instance) {
       adoptionInstance = instance;
 
-      await adoptionInstance.getAdopters.call();
+      web3.eth.getAccounts(async function(error, accounts) {
+        if (error) {
+          console.log(error);
+        }
+        var account = accounts[0];
+
+        // console.log(web3.fromWei(await adoptionInstance.getBalance.call(), "ether" ) );
+        console.log((new BigNumber(await adoptionInstance.getBalance({from:account}))).toString());
+      })
     })
   },
 
