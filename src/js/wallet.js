@@ -99,7 +99,6 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
     $(document).on('click', '#random_pet_btn', App.handleRandomAdopt);
     
   },
