@@ -71,6 +71,7 @@ contract Adoption {
 
     // util: random
     function random(uint max, uint nounce) private view returns(uint){
+        // adapt from https://betterprogramming.pub/how-to-generate-truly-random-numbers-in-solidity-and-blockchain-9ced6472dbdf
         return uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nounce))) % max;
     }
 
