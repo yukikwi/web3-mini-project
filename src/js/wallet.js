@@ -2,6 +2,7 @@ App = {
   web3Provider: null,
   contracts: {},
   walletPet: [],
+  walletBalance: 0,
 
   initUI: async function() {
     // Load pets.
@@ -33,7 +34,7 @@ App = {
         }
       }
     });
-
+    
   },
 
   initWeb3: async function() {
@@ -58,6 +59,8 @@ App = {
     }
     web3 = new Web3(App.web3Provider);
 
+    App.initBalance();
+
     return App.initContract();
   },
 
@@ -71,8 +74,27 @@ App = {
       App.contracts.Adoption.setProvider(App.web3Provider);
     
       // Use our contract to retrieve and mark the adopted pets
+      App.initBalance();
       return App.markAdopted();
     });
+  },
+
+  initBalance: function(){
+    
+    web3.eth.getAccounts(async function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+      var balance = await web3.eth.getBalance(account); //Will give value in.
+      App.walletBalance = balance;
+      var total_balance = $('#total_balance');
+      console.log(App.walletBalance);
+      total_balance.text(web3.utils.fromWei(balance, 'ether')+" ETH");
+      console.log(balance);
+      // console.log(web3.utils.fromWei(balance, 'ether'))
+    })
   },
 
   markAdopted: function() {
@@ -108,5 +130,6 @@ App = {
 $(function() {
   $(window).load(function() {
     App.initWeb3();
+    
   });
 });
