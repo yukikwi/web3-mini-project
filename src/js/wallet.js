@@ -75,6 +75,7 @@ App = {
     
       // Use our contract to retrieve and mark the adopted pets
       App.initBalance();
+      App.bindEvents();
       return App.markAdopted();
     });
   },
@@ -95,6 +96,12 @@ App = {
       console.log(balance);
       // console.log(web3.utils.fromWei(balance, 'ether'))
     })
+  },
+
+  bindEvents: function() {
+    $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '#random_pet_btn', App.handleRandomAdopt);
+    
   },
 
   markAdopted: function() {
@@ -119,6 +126,56 @@ App = {
         }
 
         App.initUI()
+      }).catch(function(err) {
+        console.log(err.message);
+      });
+    });
+  },
+
+  handleRandomAdopt: function(event) {
+    event.preventDefault();
+
+    var petId = parseInt($(event.target).data('id'));
+
+    var adoptionInstance;
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (error) {
+        console.log(error);
+      }
+
+      var account = accounts[0];
+
+      App.contracts.Adoption.deployed().then(function(instance) {
+        adoptionInstance = instance;
+
+        // Execute adopt as a transaction by sending account
+        return adoptionInstance.randomPet(Math.floor(Math.random() * 100), {from: account});
+      }).then(function(result) {
+        // pet detail
+        var randomPetData = App.petList[result.logs[0].args[1].words[0]]
+        console.log(randomPetData)
+        App.initBalance();
+        $("#random_result_body").html(` \
+        <div id="petTemplate"> \
+          <div> \
+            <div class="panel panel-default panel-pet"> \
+              <div class="panel-heading"> \
+                <h3 class="panel-title">${randomPetData.name}</h3> \
+              </div> \
+              <div class="panel-body"> \
+                <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="${randomPetData.picture}" data-holder-rendered="true"> \
+                <br/><br/> \
+                <strong>Breed</strong>: <span class="pet-breed">${randomPetData.breed}</span><br/> \
+                <strong>Age</strong>: <span class="pet-age">${randomPetData.age}</span><br/> \
+                <strong>Location</strong>: <span class="pet-location">${randomPetData.location}</span><br/><br/> \
+              </div> \
+            </div> \
+          </div> \
+        </div> \
+        `)
+        $('#random_modal').modal('show')
+        return App.markAdopted();
       }).catch(function(err) {
         console.log(err.message);
       });
